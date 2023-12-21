@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -165,8 +169,8 @@ importers:
         specifier: ^1.4.4
         version: 1.4.7
       chalk:
-        specifier: ^5.1.0
-        version: 5.3.0
+        specifier: ^4.1.2
+        version: 4.1.2
       eslint-config-prettier:
         specifier: ^8.5.0
         version: 8.10.0(eslint@8.54.0)
@@ -3949,7 +3953,3 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

@@ -1,10 +1,3 @@
-import * as fs from "fs";
-import { fileURLToPath } from "url";
+import pkg from "../package.json";
 
-const PACKAGE_JSON = JSON.parse(
-  fs.readFileSync(
-    fileURLToPath(new URL("../package.json", import.meta.url)),
-    "utf-8"
-  )
-);
-export const LIB_VERSION: string = PACKAGE_JSON["version"];
+export const LIB_VERSION: string = pkg["version"];
