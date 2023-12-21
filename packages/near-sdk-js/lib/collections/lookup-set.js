@@ -1,9 +1,35 @@
-import * as near from "../api";
-import { serializeValueWithOptions } from "../utils";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LookupSet = void 0;
+const near = __importStar(require("../api"));
+const utils_1 = require("../utils");
 /**
  * A lookup set collection that stores entries in NEAR storage.
  */
-export class LookupSet {
+class LookupSet {
     /**
      * @param keyPrefix - The byte prefix to use when storing elements inside this collection.
      */
@@ -17,7 +43,7 @@ export class LookupSet {
      * @param options - Options for storing data.
      */
     contains(key, options) {
-        const storageKey = this.keyPrefix + serializeValueWithOptions(key, options);
+        const storageKey = this.keyPrefix + (0, utils_1.serializeValueWithOptions)(key, options);
         return near.storageHasKey(storageKey);
     }
     /**
@@ -27,7 +53,7 @@ export class LookupSet {
      * @param options - Options for storing data.
      */
     remove(key, options) {
-        const storageKey = this.keyPrefix + serializeValueWithOptions(key, options);
+        const storageKey = this.keyPrefix + (0, utils_1.serializeValueWithOptions)(key, options);
         return near.storageRemove(storageKey);
     }
     /**
@@ -38,7 +64,7 @@ export class LookupSet {
      * @param options - Options for storing the data.
      */
     set(key, options) {
-        const storageKey = this.keyPrefix + serializeValueWithOptions(key, options);
+        const storageKey = this.keyPrefix + (0, utils_1.serializeValueWithOptions)(key, options);
         return !near.storageWrite(storageKey, "");
     }
     /**
@@ -56,7 +82,7 @@ export class LookupSet {
      * @param options - Options for storing the data.
      */
     serialize(options) {
-        return serializeValueWithOptions(this, options);
+        return (0, utils_1.serializeValueWithOptions)(this, options);
     }
     /**
      * Converts the deserialized data from storage to a JavaScript instance of the collection.
@@ -67,3 +93,4 @@ export class LookupSet {
         return new LookupSet(data.keyPrefix);
     }
 }
+exports.LookupSet = LookupSet;

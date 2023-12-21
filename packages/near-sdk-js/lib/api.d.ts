@@ -1,5 +1,65 @@
-import { NearAmount, PromiseIndex } from "./utils";
-import { GasWeight } from "./types";
+import { NearAmount, PromiseIndex, Register } from "./utils";
+import { GasWeight, PromiseResult } from "./types";
+interface Env {
+    panic_utf8(message: Uint8Array): never;
+    log(message: string): void;
+    log_utf8(message: Uint8Array): void;
+    log_utf16(message: Uint8Array): void;
+    read_register(register: Register): Uint8Array;
+    storage_read(key: Uint8Array, register: Register): bigint;
+    storage_has_key(key: Uint8Array): bigint;
+    storage_write(key: Uint8Array, value: Uint8Array, register: Register): bigint;
+    storage_remove(key: Uint8Array, register: Register): bigint;
+    storage_usage(): bigint;
+    signer_account_id(register: Register): void;
+    signer_account_pk(register: Register): void;
+    attached_deposit(): bigint;
+    predecessor_account_id(register: Register): void;
+    input(register: Register): void;
+    account_balance(): bigint;
+    account_locked_balance(): bigint;
+    current_account_id(register: Register): void;
+    validator_stake(accountId: string): bigint;
+    validator_total_stake(): bigint;
+    block_index(): bigint;
+    block_timestamp(): bigint;
+    epoch_height(): bigint;
+    prepaid_gas(): bigint;
+    used_gas(): bigint;
+    value_return(value: Uint8Array): void;
+    random_seed(register: Register): void;
+    sha256(value: Uint8Array, register: Register): void;
+    keccak256(value: Uint8Array, register: Register): void;
+    keccak512(value: Uint8Array, register: Register): void;
+    ripemd160(value: Uint8Array, register: Register): void;
+    ecrecover(hash: Uint8Array, sig: Uint8Array, v: number, malleabilityFlag: number, register: Register): bigint;
+    alt_bn128_g1_multiexp(value: Uint8Array, register: Register): void;
+    alt_bn128_g1_sum(value: Uint8Array, register: Register): void;
+    alt_bn128_pairing_check(value: Uint8Array): bigint;
+    promise_create(accountId: string, methodName: string, args: Uint8Array, amount: NearAmount, gas: NearAmount): bigint;
+    promise_then(promiseIndex: bigint, accountId: string, methodName: string, args: Uint8Array, amount: NearAmount, gas: NearAmount): bigint;
+    promise_and(...promiseIndexes: bigint[]): bigint;
+    promise_batch_create(accountId: string): bigint;
+    promise_batch_then(promiseIndex: bigint, accountId: string): bigint;
+    promise_batch_action_create_account(promiseIndex: bigint): void;
+    promise_batch_action_deploy_contract(promiseIndex: bigint, code: Uint8Array): void;
+    promise_batch_action_function_call(promiseIndex: bigint, methodName: string, args: Uint8Array, amount: NearAmount, gas: NearAmount): void;
+    promise_batch_action_transfer(promiseIndex: bigint, amount: NearAmount): void;
+    promise_batch_action_stake(promiseIndex: bigint, amount: NearAmount, publicKey: Uint8Array): void;
+    promise_batch_action_add_key_with_full_access(promiseIndex: bigint, publicKey: Uint8Array, nonce: number | bigint): void;
+    promise_batch_action_add_key_with_function_call(promiseIndex: bigint, publicKey: Uint8Array, nonce: number | bigint, allowance: NearAmount, receiverId: string, methodNames: string): void;
+    promise_batch_action_delete_key(promiseIndex: bigint, publicKey: Uint8Array): void;
+    promise_batch_action_delete_account(promiseIndex: bigint, beneficiaryId: string): void;
+    promise_batch_action_function_call_weight(promiseIndex: bigint, methodName: string, args: Uint8Array, amount: NearAmount, gas: NearAmount, weight: GasWeight): void;
+    promise_results_count(): bigint;
+    promise_result(promiseIndex: bigint, register: Register): PromiseResult;
+    promise_return(promiseIndex: bigint): void;
+    uint8array_to_latin1_string(a: Uint8Array): string;
+    uint8array_to_utf8_string(a: Uint8Array): string;
+    latin1_string_to_uint8array(s: string): Uint8Array;
+    utf8_string_to_uint8array(s: string): Uint8Array;
+}
+export declare type QuickJSEnv = Env;
 /**
  * Logs parameters in the NEAR WASM virtual machine.
  *
@@ -442,3 +502,4 @@ export declare function altBn128G1Sum(value: Uint8Array): Uint8Array;
  * @returns whether pairing check pass
  */
 export declare function altBn128PairingCheck(value: Uint8Array): boolean;
+export {};

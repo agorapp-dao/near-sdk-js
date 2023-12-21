@@ -1,9 +1,35 @@
-import * as near from "../api";
-import { getValueWithOptions, serializeValueWithOptions, encode, } from "../utils";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LookupMap = void 0;
+const near = __importStar(require("../api"));
+const utils_1 = require("../utils");
 /**
  * A lookup map that stores data in NEAR storage.
  */
-export class LookupMap {
+class LookupMap {
     /**
      * @param keyPrefix - The byte prefix to use when storing elements inside this collection.
      */
@@ -27,8 +53,8 @@ export class LookupMap {
      */
     get(key, options) {
         const storageKey = this.keyPrefix + key;
-        const value = near.storageReadRaw(encode(storageKey));
-        return getValueWithOptions(value, options);
+        const value = near.storageReadRaw((0, utils_1.encode)(storageKey));
+        return (0, utils_1.getValueWithOptions)(value, options);
     }
     /**
      * Removes and retrieves the element with the provided key.
@@ -42,7 +68,7 @@ export class LookupMap {
             return options?.defaultValue ?? null;
         }
         const value = near.storageGetEvictedRaw();
-        return getValueWithOptions(value, options);
+        return (0, utils_1.getValueWithOptions)(value, options);
     }
     /**
      * Store a new value at the provided key.
@@ -53,12 +79,12 @@ export class LookupMap {
      */
     set(key, newValue, options) {
         const storageKey = this.keyPrefix + key;
-        const storageValue = serializeValueWithOptions(newValue, options);
-        if (!near.storageWriteRaw(encode(storageKey), storageValue)) {
+        const storageValue = (0, utils_1.serializeValueWithOptions)(newValue, options);
+        if (!near.storageWriteRaw((0, utils_1.encode)(storageKey), storageValue)) {
             return options?.defaultValue ?? null;
         }
         const value = near.storageGetEvictedRaw();
-        return getValueWithOptions(value, options);
+        return (0, utils_1.getValueWithOptions)(value, options);
     }
     /**
      * Extends the current collection with the passed in array of key-value pairs.
@@ -77,7 +103,7 @@ export class LookupMap {
      * @param options - Options for storing the data.
      */
     serialize(options) {
-        return serializeValueWithOptions(this, options);
+        return (0, utils_1.serializeValueWithOptions)(this, options);
     }
     /**
      * Converts the deserialized data from storage to a JavaScript instance of the collection.
@@ -88,3 +114,4 @@ export class LookupMap {
         return new LookupMap(data.keyPrefix);
     }
 }
+exports.LookupMap = LookupMap;

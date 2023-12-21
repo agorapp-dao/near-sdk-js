@@ -2,10 +2,11 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["es2015", "esnext", "dom"],
-    "module": "esnext",
+    "module": "CommonJS",
     "target": "es2020",
     "moduleResolution": "node",
     "alwaysStrict": true,
+    "rootDir": "./src",
     "outDir": "./lib",
     "declaration": true,
     "preserveSymlinks": true,
