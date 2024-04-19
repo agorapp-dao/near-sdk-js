@@ -1,5 +1,5 @@
 import { GetOptions } from "./types/collections";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep } from "lodash";
 
 export interface Env {
   uint8array_to_latin1_string(a: Uint8Array): string;

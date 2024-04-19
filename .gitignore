@@ -3,3 +3,4 @@ vendor
 .idea
 deps
 .turbo
+.DS_Store

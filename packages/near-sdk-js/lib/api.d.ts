@@ -59,7 +59,7 @@ interface Env {
     latin1_string_to_uint8array(s: string): Uint8Array;
     utf8_string_to_uint8array(s: string): Uint8Array;
 }
-export declare type QuickJSEnv = Env;
+export declare type NearVmEnv = Env;
 /**
  * Logs parameters in the NEAR WASM virtual machine.
  *

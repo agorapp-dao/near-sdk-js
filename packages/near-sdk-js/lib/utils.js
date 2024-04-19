@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decode = exports.encode = exports.str = exports.bytes = exports.TextDecoder = exports.TextEncoder = exports.validateAccountId = exports.decodeObj2class = exports.deserialize = exports.serialize = exports.serializeValueWithOptions = exports.getValueWithOptions = exports.assert = exports.concat = exports.ERR_INDEX_OUT_OF_BOUNDS = exports.ERR_INCONSISTENT_STATE = void 0;
-const lodash_es_1 = require("lodash-es");
+const lodash_1 = require("lodash");
 const TYPE_KEY = "typeInfo";
 var TypeBrand;
 (function (TypeBrand) {
@@ -210,7 +210,7 @@ function decodeObj2class(class_instance, obj) {
             class_instance[key] = obj[key];
         }
     }
-    const instance_tmp = (0, lodash_es_1.cloneDeep)(class_instance);
+    const instance_tmp = (0, lodash_1.cloneDeep)(class_instance);
     for (key in obj) {
         if (typeof class_instance[key] == "object" &&
             !(class_instance[key] instanceof Date)) {

@@ -125,7 +125,7 @@ importers:
       json-schema:
         specifier: 0.4.0
         version: 0.4.0
-      lodash-es:
+      lodash:
         specifier: ^4.17.21
         version: 4.17.21
       near-abi:
@@ -162,6 +162,9 @@ importers:
       '@types/eslint':
         specifier: ^8.4.6
         version: 8.44.7
+      '@types/lodash':
+        specifier: ^4.17.0
+        version: 4.17.0
       '@types/node':
         specifier: ^17.0.38
         version: 17.0.45
@@ -966,6 +969,10 @@ packages:
 
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
+    dev: true
+
+  /@types/lodash@4.17.0:
+    resolution: {integrity: sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==}
     dev: true
 
   /@types/node@16.18.66:
@@ -2712,7 +2719,6 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /lowercase-keys@2.0.0:
     resolution: {integrity: sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==}
