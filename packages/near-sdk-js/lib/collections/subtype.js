@@ -1,4 +1,7 @@
-export class SubType {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SubType = void 0;
+class SubType {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     /* eslint-disable @typescript-eslint/no-empty-function */
     subtype() { }
@@ -23,3 +26,4 @@ export class SubType {
         return options;
     }
 }
+exports.SubType = SubType;

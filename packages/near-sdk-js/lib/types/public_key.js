@@ -1,10 +1,13 @@
-import { base58 } from "@scure/base";
-import { concat } from "../utils";
-export var CurveType;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PublicKey = exports.UnknownCurve = exports.Base58Error = exports.InvalidLengthError = exports.ParsePublicKeyError = exports.curveTypeFromStr = exports.CurveType = void 0;
+const base_1 = require("@scure/base");
+const utils_1 = require("../utils");
+var CurveType;
 (function (CurveType) {
     CurveType[CurveType["ED25519"] = 0] = "ED25519";
     CurveType[CurveType["SECP256K1"] = 1] = "SECP256K1";
-})(CurveType || (CurveType = {}));
+})(CurveType = exports.CurveType || (exports.CurveType = {}));
 var DataLength;
 (function (DataLength) {
     DataLength[DataLength["ED25519"] = 32] = "ED25519";
@@ -43,7 +46,7 @@ function splitKeyTypeData(value) {
         return [CurveType.ED25519, value];
     }
 }
-export function curveTypeFromStr(value) {
+function curveTypeFromStr(value) {
     switch (value) {
         case "ed25519":
             return CurveType.ED25519;
@@ -53,30 +56,35 @@ export function curveTypeFromStr(value) {
             throw new UnknownCurve();
     }
 }
-export class ParsePublicKeyError extends Error {
+exports.curveTypeFromStr = curveTypeFromStr;
+class ParsePublicKeyError extends Error {
 }
-export class InvalidLengthError extends ParsePublicKeyError {
+exports.ParsePublicKeyError = ParsePublicKeyError;
+class InvalidLengthError extends ParsePublicKeyError {
     constructor(length, expectedLength) {
         super(`Invalid length: ${length}. Expected: ${expectedLength}`);
         this.length = length;
         this.expectedLength = expectedLength;
     }
 }
-export class Base58Error extends ParsePublicKeyError {
+exports.InvalidLengthError = InvalidLengthError;
+class Base58Error extends ParsePublicKeyError {
     constructor(error) {
         super(`Base58 error: ${error}`);
         this.error = error;
     }
 }
-export class UnknownCurve extends ParsePublicKeyError {
+exports.Base58Error = Base58Error;
+class UnknownCurve extends ParsePublicKeyError {
     constructor() {
         super("Unknown curve");
     }
 }
+exports.UnknownCurve = UnknownCurve;
 /**
  * A abstraction on top of the NEAR public key string.
  */
-export class PublicKey {
+class PublicKey {
     /**
      * @param data - The string you want to create a PublicKey from.
      */
@@ -103,11 +111,12 @@ export class PublicKey {
         const [curve, keyData] = splitKeyTypeData(publicKeyString);
         let data;
         try {
-            data = base58.decode(keyData);
+            data = base_1.base58.decode(keyData);
         }
         catch (error) {
             throw new Base58Error(error.message);
         }
-        return new PublicKey(concat(new Uint8Array([curve]), data));
+        return new PublicKey((0, utils_1.concat)(new Uint8Array([curve]), data));
     }
 }
+exports.PublicKey = PublicKey;

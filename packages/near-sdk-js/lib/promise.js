@@ -1,26 +1,54 @@
-import { assert } from "./utils";
-import * as near from "./api";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NearPromise = exports.PromiseJoint = exports.DeleteAccount = exports.DeleteKey = exports.AddAccessKey = exports.AddFullAccessKey = exports.Stake = exports.Transfer = exports.FunctionCallWeightRaw = exports.FunctionCallWeight = exports.FunctionCallRaw = exports.FunctionCall = exports.DeployContract = exports.CreateAccount = exports.PromiseAction = void 0;
+const utils_1 = require("./utils");
+const near = __importStar(require("./api"));
 /**
  * A promise action which can be executed on the NEAR blockchain.
  */
-export class PromiseAction {
+class PromiseAction {
 }
+exports.PromiseAction = PromiseAction;
 /**
  * A create account promise action.
  *
  * @extends {PromiseAction}
  */
-export class CreateAccount extends PromiseAction {
+class CreateAccount extends PromiseAction {
     add(promiseIndex) {
         near.promiseBatchActionCreateAccount(promiseIndex);
     }
 }
+exports.CreateAccount = CreateAccount;
 /**
  * A deploy contract promise action.
  *
  * @extends {PromiseAction}
  */
-export class DeployContract extends PromiseAction {
+class DeployContract extends PromiseAction {
     /**
      * @param code - The code of the contract to be deployed.
      */
@@ -32,12 +60,13 @@ export class DeployContract extends PromiseAction {
         near.promiseBatchActionDeployContract(promiseIndex, this.code);
     }
 }
+exports.DeployContract = DeployContract;
 /**
  * A function call promise action.
  *
  * @extends {PromiseAction}
  */
-export class FunctionCall extends PromiseAction {
+class FunctionCall extends PromiseAction {
     /**
      * @param functionName - The name of the function to be called.
      * @param args - The utf-8 string arguments to be passed to the function.
@@ -55,12 +84,13 @@ export class FunctionCall extends PromiseAction {
         near.promiseBatchActionFunctionCall(promiseIndex, this.functionName, this.args, this.amount, this.gas);
     }
 }
+exports.FunctionCall = FunctionCall;
 /**
  * A function call raw promise action.
  *
  * @extends {PromiseAction}
  */
-export class FunctionCallRaw extends PromiseAction {
+class FunctionCallRaw extends PromiseAction {
     /**
      * @param functionName - The name of the function to be called.
      * @param args - The arguments to be passed to the function.
@@ -78,12 +108,13 @@ export class FunctionCallRaw extends PromiseAction {
         near.promiseBatchActionFunctionCallRaw(promiseIndex, this.functionName, this.args, this.amount, this.gas);
     }
 }
+exports.FunctionCallRaw = FunctionCallRaw;
 /**
  * A function call weight promise action.
  *
  * @extends {PromiseAction}
  */
-export class FunctionCallWeight extends PromiseAction {
+class FunctionCallWeight extends PromiseAction {
     /**
      * @param functionName - The name of the function to be called.
      * @param args - The utf-8 string arguments to be passed to the function.
@@ -103,12 +134,13 @@ export class FunctionCallWeight extends PromiseAction {
         near.promiseBatchActionFunctionCallWeight(promiseIndex, this.functionName, this.args, this.amount, this.gas, this.weight);
     }
 }
+exports.FunctionCallWeight = FunctionCallWeight;
 /**
  * A function call weight raw promise action.
  *
  * @extends {PromiseAction}
  */
-export class FunctionCallWeightRaw extends PromiseAction {
+class FunctionCallWeightRaw extends PromiseAction {
     /**
      * @param functionName - The name of the function to be called.
      * @param args - The arguments to be passed to the function.
@@ -128,12 +160,13 @@ export class FunctionCallWeightRaw extends PromiseAction {
         near.promiseBatchActionFunctionCallWeightRaw(promiseIndex, this.functionName, this.args, this.amount, this.gas, this.weight);
     }
 }
+exports.FunctionCallWeightRaw = FunctionCallWeightRaw;
 /**
  * A transfer promise action.
  *
  * @extends {PromiseAction}
  */
-export class Transfer extends PromiseAction {
+class Transfer extends PromiseAction {
     /**
      * @param amount - The amount of NEAR to tranfer.
      */
@@ -145,12 +178,13 @@ export class Transfer extends PromiseAction {
         near.promiseBatchActionTransfer(promiseIndex, this.amount);
     }
 }
+exports.Transfer = Transfer;
 /**
  * A stake promise action.
  *
  * @extends {PromiseAction}
  */
-export class Stake extends PromiseAction {
+class Stake extends PromiseAction {
     /**
      * @param amount - The amount of NEAR to tranfer.
      * @param publicKey - The public key to use for staking.
@@ -164,12 +198,13 @@ export class Stake extends PromiseAction {
         near.promiseBatchActionStake(promiseIndex, this.amount, this.publicKey.data);
     }
 }
+exports.Stake = Stake;
 /**
  * A add full access key promise action.
  *
  * @extends {PromiseAction}
  */
-export class AddFullAccessKey extends PromiseAction {
+class AddFullAccessKey extends PromiseAction {
     /**
      * @param publicKey - The public key to add as a full access key.
      * @param nonce - The nonce to use.
@@ -183,12 +218,13 @@ export class AddFullAccessKey extends PromiseAction {
         near.promiseBatchActionAddKeyWithFullAccess(promiseIndex, this.publicKey.data, this.nonce);
     }
 }
+exports.AddFullAccessKey = AddFullAccessKey;
 /**
  * A add access key promise action.
  *
  * @extends {PromiseAction}
  */
-export class AddAccessKey extends PromiseAction {
+class AddAccessKey extends PromiseAction {
     /**
      * @param publicKey - The public key to add as a access key.
      * @param allowance - The allowance for the key in yoctoNEAR.
@@ -208,12 +244,13 @@ export class AddAccessKey extends PromiseAction {
         near.promiseBatchActionAddKeyWithFunctionCall(promiseIndex, this.publicKey.data, this.nonce, this.allowance, this.receiverId, this.functionNames);
     }
 }
+exports.AddAccessKey = AddAccessKey;
 /**
  * A delete key promise action.
  *
  * @extends {PromiseAction}
  */
-export class DeleteKey extends PromiseAction {
+class DeleteKey extends PromiseAction {
     /**
      * @param publicKey - The public key to delete from the account.
      */
@@ -225,12 +262,13 @@ export class DeleteKey extends PromiseAction {
         near.promiseBatchActionDeleteKey(promiseIndex, this.publicKey.data);
     }
 }
+exports.DeleteKey = DeleteKey;
 /**
  * A delete account promise action.
  *
  * @extends {PromiseAction}
  */
-export class DeleteAccount extends PromiseAction {
+class DeleteAccount extends PromiseAction {
     /**
      * @param beneficiaryId - The beneficiary of the account deletion - the account to recieve all of the remaining funds of the deleted account.
      */
@@ -242,6 +280,7 @@ export class DeleteAccount extends PromiseAction {
         near.promiseBatchActionDeleteAccount(promiseIndex, this.beneficiaryId);
     }
 }
+exports.DeleteAccount = DeleteAccount;
 class PromiseSingle {
     constructor(accountId, actions, after, promiseIndex) {
         this.accountId = accountId;
@@ -261,7 +300,7 @@ class PromiseSingle {
         return promiseIndex;
     }
 }
-export class PromiseJoint {
+class PromiseJoint {
     constructor(promiseA, promiseB, promiseIndex) {
         this.promiseA = promiseA;
         this.promiseB = promiseB;
@@ -276,10 +315,11 @@ export class PromiseJoint {
         return result;
     }
 }
+exports.PromiseJoint = PromiseJoint;
 /**
  * A high level class to construct and work with NEAR promises.
  */
-export class NearPromise {
+class NearPromise {
     /**
      * @param subtype - The subtype of the promise.
      * @param shouldReturn - Whether the promise should return.
@@ -456,8 +496,8 @@ export class NearPromise {
      * @param other - The promise to be executed as the promise.
      */
     then(other) {
-        assert(other.subtype instanceof PromiseSingle, "Cannot callback joint promise.");
-        assert(other.subtype.after === null, "Cannot callback promise which is already scheduled after another");
+        (0, utils_1.assert)(other.subtype instanceof PromiseSingle, "Cannot callback joint promise.");
+        (0, utils_1.assert)(other.subtype.after === null, "Cannot callback promise which is already scheduled after another");
         other.subtype.after = this;
         return other;
     }
@@ -485,3 +525,4 @@ export class NearPromise {
         this.asReturn().constructRecursively();
     }
 }
+exports.NearPromise = NearPromise;

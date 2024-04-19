@@ -1,16 +1,7 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
-    "tests#build":{
-    },
-    "bench#build":{
-      "dependsOn": ["tests#build"]
-    },
-    "examples#build":{
-    },
     "near-sdk-js#build":{
-    },
-    "near-contract-standards#build":{
     },
     "test": {
       "inputs": [],

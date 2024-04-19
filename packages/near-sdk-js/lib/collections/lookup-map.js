@@ -1,10 +1,36 @@
-import * as near from "../api";
-import { getValueWithOptions, serializeValueWithOptions, encode, } from "../utils";
-import { SubType } from "./subtype";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LookupMap = void 0;
+const near = __importStar(require("../api"));
+const utils_1 = require("../utils");
+const subtype_1 = require("./subtype");
 /**
  * A lookup map that stores data in NEAR storage.
  */
-export class LookupMap extends SubType {
+class LookupMap extends subtype_1.SubType {
     /**
      * @param keyPrefix - The byte prefix to use when storing elements inside this collection.
      */
@@ -29,12 +55,12 @@ export class LookupMap extends SubType {
      */
     get(key, options) {
         const storageKey = this.keyPrefix + key;
-        const value = near.storageReadRaw(encode(storageKey));
+        const value = near.storageReadRaw((0, utils_1.encode)(storageKey));
         if (options == undefined) {
             options = {};
         }
         options = this.set_reconstructor(options);
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Removes and retrieves the element with the provided key.
@@ -48,7 +74,7 @@ export class LookupMap extends SubType {
             return options?.defaultValue ?? null;
         }
         const value = near.storageGetEvictedRaw();
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Store a new value at the provided key.
@@ -59,12 +85,12 @@ export class LookupMap extends SubType {
      */
     set(key, newValue, options) {
         const storageKey = this.keyPrefix + key;
-        const storageValue = serializeValueWithOptions(newValue, options);
-        if (!near.storageWriteRaw(encode(storageKey), storageValue)) {
+        const storageValue = (0, utils_1.serializeValueWithOptions)(newValue, options);
+        if (!near.storageWriteRaw((0, utils_1.encode)(storageKey), storageValue)) {
             return options?.defaultValue ?? null;
         }
         const value = near.storageGetEvictedRaw();
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Extends the current collection with the passed in array of key-value pairs.
@@ -83,7 +109,7 @@ export class LookupMap extends SubType {
      * @param options - Options for storing the data.
      */
     serialize(options) {
-        return serializeValueWithOptions(this, options);
+        return (0, utils_1.serializeValueWithOptions)(this, options);
     }
     /**
      * Converts the deserialized data from storage to a JavaScript instance of the collection.
@@ -94,3 +120,4 @@ export class LookupMap extends SubType {
         return new LookupMap(data.keyPrefix);
     }
 }
+exports.LookupMap = LookupMap;

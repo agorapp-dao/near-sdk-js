@@ -172,8 +172,8 @@ importers:
         specifier: ^1.4.4
         version: 1.4.7
       chalk:
-        specifier: ^5.1.0
-        version: 5.3.0
+        specifier: ^4.1.2
+        version: 4.1.2
       eslint-config-prettier:
         specifier: ^8.5.0
         version: 8.10.0(eslint@8.54.0)

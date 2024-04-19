@@ -152,6 +152,8 @@ interface Env {
 
 declare const env: Env;
 
+export type QuickJSEnv = Env;
+
 /**
  * Logs parameters in the NEAR WASM virtual machine.
  *
