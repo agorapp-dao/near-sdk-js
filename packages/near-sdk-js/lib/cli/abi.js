@@ -1,11 +1,40 @@
-import ts from "typescript";
-import JSON5 from 'json5';
-import * as abi from "near-abi";
-import * as TJS from "near-typescript-json-schema";
-import * as fs from "fs";
-import { LIB_VERSION } from "../version.js";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.runAbiCompilerPlugin = void 0;
+const typescript_1 = __importDefault(require("typescript"));
+const json5_1 = __importDefault(require("json5"));
+const abi = __importStar(require("near-abi"));
+const TJS = __importStar(require("near-typescript-json-schema"));
+const fs = __importStar(require("fs"));
+const version_js_1 = require("../version.js");
 function parseMetadata(packageJsonPath) {
-    const packageJson = JSON5.parse(fs.readFileSync(packageJsonPath, "utf8"));
+    const packageJson = json5_1.default.parse(fs.readFileSync(packageJsonPath, "utf8"));
     let authors = [];
     if (packageJson["author"])
         authors.push(packageJson["author"]);
@@ -15,32 +44,32 @@ function parseMetadata(packageJsonPath) {
         version: packageJson["version"],
         authors,
         build: {
-            compiler: "tsc " + ts.version,
-            builder: "near-sdk-js " + LIB_VERSION,
+            compiler: "tsc " + typescript_1.default.version,
+            builder: "near-sdk-js " + version_js_1.LIB_VERSION,
         },
     };
 }
 function getProgramFromFiles(files, jsonCompilerOptions, basePath = "./") {
-    const { options, errors } = ts.convertCompilerOptionsFromJson(jsonCompilerOptions, basePath);
+    const { options, errors } = typescript_1.default.convertCompilerOptionsFromJson(jsonCompilerOptions, basePath);
     if (errors.length > 0) {
         errors.forEach((error) => {
             console.log(error.messageText);
         });
         throw Error("Invalid compiler options");
     }
-    return ts.createProgram(files, options);
+    return typescript_1.default.createProgram(files, options);
 }
 function validateNearClass(node) {
-    if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
+    if (node.kind !== typescript_1.default.SyntaxKind.ClassDeclaration) {
         throw Error("Expected NEAR function to be inside of a class");
     }
     const classDeclaration = node;
     const decorators = classDeclaration.decorators || [];
     const containsNearBindgen = decorators.some((decorator) => {
-        if (decorator.expression.kind !== ts.SyntaxKind.CallExpression)
+        if (decorator.expression.kind !== typescript_1.default.SyntaxKind.CallExpression)
             return false;
         const decoratorExpression = decorator.expression;
-        if (decoratorExpression.expression.kind !== ts.SyntaxKind.Identifier)
+        if (decoratorExpression.expression.kind !== typescript_1.default.SyntaxKind.Identifier)
             return false;
         const decoratorIdentifier = decoratorExpression.expression;
         const decoratorName = decoratorIdentifier.text;
@@ -50,14 +79,14 @@ function validateNearClass(node) {
         throw Error("Expected NEAR function to be inside of a class decorated with @NearBindgen");
     }
 }
-export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) {
-    const tsConfig = JSON5.parse(fs.readFileSync(tsConfigJsonPath, "utf8"));
+function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) {
+    const tsConfig = json5_1.default.parse(fs.readFileSync(tsConfigJsonPath, "utf8"));
     const program = getProgramFromFiles([tsFile], tsConfig["compilerOptions"]);
     const typeChecker = program.getTypeChecker();
-    const diagnostics = ts.getPreEmitDiagnostics(program);
+    const diagnostics = typescript_1.default.getPreEmitDiagnostics(program);
     if (diagnostics.length > 0) {
         diagnostics.forEach((diagnostic) => {
-            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+            const message = typescript_1.default.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
             if (diagnostic.file && diagnostic.start) {
                 const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
                 console.error(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
@@ -75,7 +104,7 @@ export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) 
     const abiFunctions = [];
     program.getSourceFiles().forEach((sourceFile, _sourceFileIdx) => {
         function inspect(node, tc) {
-            if (node.kind === ts.SyntaxKind.MethodDeclaration) {
+            if (node.kind === typescript_1.default.SyntaxKind.MethodDeclaration) {
                 const methodDeclaration = node;
                 const decorators = methodDeclaration.decorators ||
                     [];
@@ -84,31 +113,31 @@ export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) 
                 let isInit = false;
                 const abiModifiers = [];
                 decorators.forEach((decorator) => {
-                    if (decorator.expression.kind !== ts.SyntaxKind.CallExpression)
+                    if (decorator.expression.kind !== typescript_1.default.SyntaxKind.CallExpression)
                         return;
                     const decoratorExpression = decorator.expression;
-                    if (decoratorExpression.expression.kind !== ts.SyntaxKind.Identifier)
+                    if (decoratorExpression.expression.kind !== typescript_1.default.SyntaxKind.Identifier)
                         return;
                     const decoratorIdentifier = decoratorExpression.expression;
                     const decoratorName = decoratorIdentifier.text;
                     if (decoratorName === "call") {
                         isCall = true;
                         decoratorExpression.arguments.forEach((arg) => {
-                            if (arg.kind !== ts.SyntaxKind.ObjectLiteralExpression)
+                            if (arg.kind !== typescript_1.default.SyntaxKind.ObjectLiteralExpression)
                                 return;
                             const objLiteral = arg;
                             objLiteral.properties.forEach((prop) => {
                                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 const propName = prop.name.text;
                                 if (propName === "privateFunction") {
-                                    if (prop.kind !== ts.SyntaxKind.PropertyAssignment)
+                                    if (prop.kind !== typescript_1.default.SyntaxKind.PropertyAssignment)
                                         return;
                                     const propAssignment = prop;
                                     const init = propAssignment.initializer;
-                                    if (init.kind === ts.SyntaxKind.TrueKeyword) {
+                                    if (init.kind === typescript_1.default.SyntaxKind.TrueKeyword) {
                                         abiModifiers.push(abi.AbiFunctionModifier.Private);
                                     }
-                                    else if (init.kind === ts.SyntaxKind.FalseKeyword) {
+                                    else if (init.kind === typescript_1.default.SyntaxKind.FalseKeyword) {
                                         // Do nothing
                                     }
                                     else {
@@ -117,14 +146,14 @@ export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) 
                                     }
                                 }
                                 if (propName === "payableFunction") {
-                                    if (prop.kind !== ts.SyntaxKind.PropertyAssignment)
+                                    if (prop.kind !== typescript_1.default.SyntaxKind.PropertyAssignment)
                                         return;
                                     const propAssignment = prop;
                                     const init = propAssignment.initializer;
-                                    if (init.kind === ts.SyntaxKind.TrueKeyword) {
+                                    if (init.kind === typescript_1.default.SyntaxKind.TrueKeyword) {
                                         abiModifiers.push(abi.AbiFunctionModifier.Payable);
                                     }
-                                    else if (init.kind === ts.SyntaxKind.FalseKeyword) {
+                                    else if (init.kind === typescript_1.default.SyntaxKind.FalseKeyword) {
                                         // Do nothing
                                     }
                                     else {
@@ -160,12 +189,12 @@ export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) 
                     if (!jsonObjectParameter.type) {
                         throw Error("Expected NEAR function to have explicit types, e.g. `{ id }: {id : string }`");
                     }
-                    if (jsonObjectParameter.type.kind !== ts.SyntaxKind.TypeLiteral) {
+                    if (jsonObjectParameter.type.kind !== typescript_1.default.SyntaxKind.TypeLiteral) {
                         throw Error("Expected NEAR function to have a single object binding parameter, e.g. `{ id }: { id: string }`");
                     }
                     const typeLiteral = jsonObjectParameter.type;
                     abiParams = typeLiteral.members.map((member) => {
-                        if (member.kind !== ts.SyntaxKind.PropertySignature) {
+                        if (member.kind !== typescript_1.default.SyntaxKind.PropertySignature) {
                             throw Error("Expected NEAR function to have a single object binding parameter, e.g. `{ id }: { id: string }`");
                         }
                         const propertySignature = member;
@@ -209,7 +238,7 @@ export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) 
                 abiFunctions.push(abiFunction);
             }
             else {
-                ts.forEachChild(node, (n) => inspect(n, tc));
+                typescript_1.default.forEachChild(node, (n) => inspect(n, tc));
             }
         }
         inspect(sourceFile, typeChecker);
@@ -224,3 +253,4 @@ export function runAbiCompilerPlugin(tsFile, packageJsonPath, tsConfigJsonPath) 
     };
     return abiRoot;
 }
+exports.runAbiCompilerPlugin = runAbiCompilerPlugin;

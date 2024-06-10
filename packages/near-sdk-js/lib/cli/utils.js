@@ -1,11 +1,17 @@
-import childProcess from "child_process";
-import { promisify } from "util";
-import signal from "signale";
-import { Project } from "ts-morph";
-import chalk from "chalk";
-const { Signale } = signal;
-const exec = promisify(childProcess.exec);
-export async function executeCommand(command, verbose = false) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateContract = exports.download = exports.executeCommand = void 0;
+const child_process_1 = __importDefault(require("child_process"));
+const util_1 = require("util");
+const signale_1 = __importDefault(require("signale"));
+const ts_morph_1 = require("ts-morph");
+const chalk_1 = __importDefault(require("chalk"));
+const { Signale } = signale_1.default;
+const exec = (0, util_1.promisify)(child_process_1.default.exec);
+async function executeCommand(command, verbose = false) {
     const signale = new Signale({ scope: "exec", interactive: !verbose });
     if (verbose) {
         signale.info(`Running command: ${command}`);
@@ -35,9 +41,11 @@ export async function executeCommand(command, verbose = false) {
     }
     return stdout.trim();
 }
-export async function download(url, verbose = false) {
+exports.executeCommand = executeCommand;
+async function download(url, verbose = false) {
     await executeCommand(`curl -LOf ${url}`, verbose);
 }
+exports.download = download;
 const UNINITIALIZED_PARAMETERS_ERROR = "All parameters must be initialized in the constructor. Uninitialized parameters:";
 /**
  * Validates the contract by checking that all parameters are initialized in the constructor. Works only for contracts written in TypeScript.
@@ -45,9 +53,9 @@ const UNINITIALIZED_PARAMETERS_ERROR = "All parameters must be initialized in th
  * @param contractPath - Path to the contract.
  * @param verbose - Whether to print verbose output.
  **/
-export async function validateContract(contractPath, verbose = false) {
+async function validateContract(contractPath, verbose = false) {
     const signale = new Signale({ scope: "validate-contract" });
-    const project = new Project();
+    const project = new ts_morph_1.Project();
     project.addSourceFilesAtPaths(contractPath);
     const sourceFile = project.getSourceFile(contractPath);
     const classDeclarations = sourceFile.getClasses();
@@ -66,7 +74,7 @@ export async function validateContract(contractPath, verbose = false) {
                 return true;
             }
             if (!hasConstructor && propertiesToBeInited.length > 0) {
-                signale.error(chalk.redBright(`${UNINITIALIZED_PARAMETERS_ERROR} ${propertiesToBeInited
+                signale.error(chalk_1.default.redBright(`${UNINITIALIZED_PARAMETERS_ERROR} ${propertiesToBeInited
                     .map(({ name }) => name)
                     .join(", ")}`));
                 return false;
@@ -83,10 +91,11 @@ export async function validateContract(contractPath, verbose = false) {
                 return [...properties, name];
             }, []);
             if (nonInitedProperties.length > 0) {
-                signale.error(chalk.redBright(`${UNINITIALIZED_PARAMETERS_ERROR} ${nonInitedProperties.join(", ")}`));
+                signale.error(chalk_1.default.redBright(`${UNINITIALIZED_PARAMETERS_ERROR} ${nonInitedProperties.join(", ")}`));
                 return false;
             }
         }
     }
     return true;
 }
+exports.validateContract = validateContract;

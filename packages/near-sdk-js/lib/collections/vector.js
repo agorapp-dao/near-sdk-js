@@ -1,17 +1,43 @@
-import * as near from "../api";
-import { assert, getValueWithOptions, serializeValueWithOptions, ERR_INCONSISTENT_STATE, ERR_INDEX_OUT_OF_BOUNDS, str, bytes, } from "../utils";
-import { SubType } from "./subtype";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VectorIterator = exports.Vector = void 0;
+const near = __importStar(require("../api"));
+const utils_1 = require("../utils");
+const subtype_1 = require("./subtype");
 function indexToKey(prefix, index) {
     const data = new Uint32Array([index]);
     const array = new Uint8Array(data.buffer);
-    const key = str(array);
+    const key = (0, utils_1.str)(array);
     return prefix + key;
 }
 /**
  * An iterable implementation of vector that stores its content on the trie.
  * Uses the following map: index -> element
  */
-export class Vector extends SubType {
+class Vector extends subtype_1.SubType {
     /**
      * @param prefix - The byte prefix to use when storing elements inside this collection.
      * @param length - The initial length of the collection. By default 0.
@@ -38,9 +64,9 @@ export class Vector extends SubType {
             return options?.defaultValue ?? null;
         }
         const storageKey = indexToKey(this.prefix, index);
-        const value = near.storageReadRaw(bytes(storageKey));
+        const value = near.storageReadRaw((0, utils_1.bytes)(storageKey));
         options = this.set_reconstructor(options);
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Removes an element from the vector and returns it in serialized form.
@@ -51,16 +77,16 @@ export class Vector extends SubType {
      * @param options - Options for retrieving and storing the data.
      */
     swapRemove(index, options) {
-        assert(index < this.length, ERR_INDEX_OUT_OF_BOUNDS);
+        (0, utils_1.assert)(index < this.length, utils_1.ERR_INDEX_OUT_OF_BOUNDS);
         if (index + 1 === this.length) {
             return this.pop(options);
         }
         const key = indexToKey(this.prefix, index);
         const last = this.pop(options);
-        assert(near.storageWriteRaw(bytes(key), serializeValueWithOptions(last, options)), ERR_INCONSISTENT_STATE);
+        (0, utils_1.assert)(near.storageWriteRaw((0, utils_1.bytes)(key), (0, utils_1.serializeValueWithOptions)(last, options)), utils_1.ERR_INCONSISTENT_STATE);
         const value = near.storageGetEvictedRaw();
         options = this.set_reconstructor(options);
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Adds data to the collection.
@@ -71,7 +97,7 @@ export class Vector extends SubType {
     push(element, options) {
         const key = indexToKey(this.prefix, this.length);
         this.length += 1;
-        near.storageWriteRaw(bytes(key), serializeValueWithOptions(element, options));
+        near.storageWriteRaw((0, utils_1.bytes)(key), (0, utils_1.serializeValueWithOptions)(element, options));
     }
     /**
      * Removes and retrieves the element with the highest index.
@@ -85,9 +111,9 @@ export class Vector extends SubType {
         const lastIndex = this.length - 1;
         const lastKey = indexToKey(this.prefix, lastIndex);
         this.length -= 1;
-        assert(near.storageRemoveRaw(bytes(lastKey)), ERR_INCONSISTENT_STATE);
+        (0, utils_1.assert)(near.storageRemoveRaw((0, utils_1.bytes)(lastKey)), utils_1.ERR_INCONSISTENT_STATE);
         const value = near.storageGetEvictedRaw();
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Replaces the data stored at the provided index with the provided data and returns the previously stored data.
@@ -97,12 +123,12 @@ export class Vector extends SubType {
      * @param options - Options for retrieving and storing the data.
      */
     replace(index, element, options) {
-        assert(index < this.length, ERR_INDEX_OUT_OF_BOUNDS);
+        (0, utils_1.assert)(index < this.length, utils_1.ERR_INDEX_OUT_OF_BOUNDS);
         const key = indexToKey(this.prefix, index);
-        assert(near.storageWriteRaw(bytes(key), serializeValueWithOptions(element, options)), ERR_INCONSISTENT_STATE);
+        (0, utils_1.assert)(near.storageWriteRaw((0, utils_1.bytes)(key), (0, utils_1.serializeValueWithOptions)(element, options)), utils_1.ERR_INCONSISTENT_STATE);
         const value = near.storageGetEvictedRaw();
         options = this.set_reconstructor(options);
-        return getValueWithOptions(this.subtype(), value, options);
+        return (0, utils_1.getValueWithOptions)(this.subtype(), value, options);
     }
     /**
      * Extends the current collection with the passed in array of elements.
@@ -146,7 +172,7 @@ export class Vector extends SubType {
     clear() {
         for (let index = 0; index < this.length; index++) {
             const key = indexToKey(this.prefix, index);
-            near.storageRemoveRaw(bytes(key));
+            near.storageRemoveRaw((0, utils_1.bytes)(key));
         }
         this.length = 0;
     }
@@ -156,7 +182,7 @@ export class Vector extends SubType {
      * @param options - Options for storing the data.
      */
     serialize(options) {
-        return serializeValueWithOptions(this, options);
+        return (0, utils_1.serializeValueWithOptions)(this, options);
     }
     /**
      * Converts the deserialized data from storage to a JavaScript instance of the collection.
@@ -168,10 +194,11 @@ export class Vector extends SubType {
         return vector;
     }
 }
+exports.Vector = Vector;
 /**
  * An iterator for the Vector collection.
  */
-export class VectorIterator {
+class VectorIterator {
     /**
      * @param vector - The vector collection to create an iterator for.
      * @param options - Options for retrieving and storing data.
@@ -190,3 +217,4 @@ export class VectorIterator {
         return { value, done: false };
     }
 }
+exports.VectorIterator = VectorIterator;
